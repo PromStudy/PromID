@@ -5,7 +5,7 @@ PromID can be installed from the [github repository](https://github.com/PromStud
 ```sh
 git clone https://github.com/PromStudy/PromID.git
 cd PromID
-python setup.py install
+pip install .
 ```
 PromID requires ```tensorflow>=1.7.0```, the GPU version is highly recommended.
 

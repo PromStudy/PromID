@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import os
+#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 import numpy as np
 from math import sqrt
@@ -7,7 +9,6 @@ from numpy import zeros
 import sys
 import re
 import math
-import os
 from random import randint
 from tensorflow.python.saved_model import builder as saved_model_builder
 import pickle
@@ -15,6 +16,9 @@ import time
 import argparse
 import logging
 from pkg_resources import resource_filename
+
+#tf.logging.set_verbosity(tf.logging.ERROR)
+#tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 def get_options():
 
@@ -36,7 +40,7 @@ def get_options():
                         help='decision threshold for the prediction model'
                              ', defaults to 0.5')
     parser.add_argument('-C', metavar='chromosomes', default="",
-                        type=str, help='comman separated list of chromosomes to use for promoter prediction '
+                        type=str, help='comma separated list of chromosomes to use for promoter prediction '
                              ', defaults to all chromosomes')
 
     args = parser.parse_args()
@@ -97,7 +101,7 @@ def pick_scan(scores, dt, minDist):
     return all_chosen
 
 
-def main():
+def main():    
     args = get_options()
 
     if None in [args.I, args.O]:
@@ -109,8 +113,10 @@ def main():
     half_size = 1000
     batch_size = 128
 
-    dt1 = 0.2
-    dt2 = 0.5
+    dt1 = args.T1
+    dt2 = args.T2
+    print("Scan threshold: " + str(dt1))
+    print("Prediction threshold: " + str(dt2))
     minDist = 1000 
 
     print("Parsing fasta at " + str(args.I))
@@ -173,9 +179,9 @@ def main():
                         m = m + 1
 
                 putative[ck].sort(key=lambda x: x[1], reverse=True)
-                putative[ck] = pick_scan(putative[strand], dt1, 1000)
+                putative[ck] = pick_scan(putative[ck], dt1, 1000)
                 putative[ck].sort()
-                print("Scanned " + strand + " strand. Found " + str(len(putative[strand])) + " regions.")
+                print("Scanned " + strand + " strand. Found " + str(len(putative[ck])) + " promoter regions.")
 
     out = [] 
     new_graph = tf.Graph()
@@ -194,7 +200,7 @@ def main():
                 scores = []
                 ck = key + strand
                 m = 1
-                for p in putative[strand]:
+                for p in putative[ck]:
                     for j in range(p - int(scan_step/2), p + int(scan_step/2) + 1):
                         fa = fasta[key][j - half_size: j + half_size + 1]
                         if(len(fa) == sLen):
@@ -208,7 +214,7 @@ def main():
                         m = m + 1
 
                 scores.sort(key=lambda x: x[1], reverse=True)
-                new_scores = pick(scores, dt2, minDist)
+                new_scores = pick(scores, dt2, minDist, strand)
                 rows.extend(new_scores)
                 print("Predicted " + strand + " strand. Found " + str(len(new_scores)) + " promoters.")
 
@@ -221,9 +227,8 @@ def main():
                     key+":"+str(row[0] - half_size + 1)+":" + str(row[0] + half_size + 2)+":"+row[2]+"\t" +
                 str(row[1]) +"\t" + row[2] +"\t" + str(row[0])+"\t" +str(row[0] + 1)+"\t" +col)
 
-    with open(output_folder + "/" + ck, 'w+') as f:
+    with open(args.O, 'w+') as f:
         f.write('\n'.join(out))
-        f.write("\n")
 
 
 if __name__ == '__main__':
