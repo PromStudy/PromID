@@ -23,10 +23,10 @@ def get_options():
                         help='path to the input genome')
     parser.add_argument('-O', metavar='output', required=True,
                         help='path to the output file')    
-    parser.add_argument('-D', metavar='distance', default=1000,
+    parser.add_argument('-D', metavar='distance', default=500,
                         type=int, choices=range(50, 10000),
                         help='minimum soft distance between the predicted TSS '
-                             ', defaults to 1000')
+                             ', defaults to 500')
     parser.add_argument('-T', metavar='threshold', default=0.5,
                         type=float, 
                         help='decision threshold for the prediction model'
