@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: promid
-Version: 1.0
+Version: 1.1
 Summary: PromID: A deep learning-based tool to identify promoters
 Home-page: https://github.com/PromStudy/PromID
 Author: Ramzan Umarov
 Author-email: umarov256@gmail.com
 License: MIT
-Download-URL: https://github.com/PromStudy/PromID/archive/1.0.tar.gz
+Download-URL: https://github.com/PromStudy/PromID/archive/v1.01.tar.gz
 Description: # PromID: A deep learning-based tool to identify promoters
         
         ## Installation

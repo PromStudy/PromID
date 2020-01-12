@@ -21,5 +21,4 @@ Required parameters:
 Optional parameters:
  - ```-D```: Minimum soft distance between the predicted TSS, defaults to 1000.
  - ```-C```: Comma separated list of chromosomes to use for promoter prediction, defaults to all.
- - ```-T1```: Decision threshold for the scan model, defaults to 0.2.
- - ```-T2```: Decision threshold for the prediction model, defaults to 0.5.
+ - ```-T```: Decision threshold for the prediction model, defaults to 0.5.
