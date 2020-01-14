@@ -39,16 +39,17 @@ def get_options():
 
     return args
 
-def encode(ns, strand):
+enc_mat = np.append(np.eye(4), [[0,0,0,0]], axis=0)
+enc_mat = enc_mat.astype(np.bool)
+mapping_pos = dict(zip("ACGTN", range(5)))
+mapping_neg = dict(zip("TGCAN", range(5)))
+def encode(seq, strand):
     if(strand == "+"):
-        rep = {"A": "1,0,0,0,", "T": "0,1,0,0,", "G": "0,0,1,0,", "C": "0,0,0,1,", "N": "0,0,0,0,"} 
+        seq2 = [mapping_pos[i] for i in seq]
     else:
-        ns = ns[::-1]
-        rep = {"A": "0,1,0,0,", "T": "1,0,0,0,", "G":"0,0,0,1," , "C": "0,0,1,0,", "N": "0,0,0,0,"} 
-    rep = dict((re.escape(k), v) for k, v in rep.items())
-    pattern = re.compile("|".join(rep.keys()))
-    ns = pattern.sub(lambda m: rep[re.escape(m.group(0))], ns)
-    return np.fromstring(ns[:-1], dtype=int, sep=",").reshape(-1, 4) 
+        seq = seq[::-1]
+        seq2 = [mapping_neg[i] for i in seq]
+    return enc_mat[seq2]
 
 def close(s, a):
     fmd = float('inf')
@@ -110,11 +111,11 @@ def main():
                       ' -C chromosomes')
         exit()
 
-    print("PromID 1.01")
+    print("PromID 1.02")
     sLen = 1001
     half_size = 500
     batch_size = 128
-    dt1 = 0.1
+    dt1 = 0.05
     dt2 = args.T
     minDist = args.D 
     #print("Scan threshold: " + str(dt1))
@@ -187,7 +188,7 @@ def main():
                 putative[ck].sort(key=lambda x: x[1], reverse=True)
                 putative[ck] = pick_scan(putative[ck], dt1, minDist)
                 putative[ck].sort()
-                print("Scanned " + strand + " strand. Found " + str(len(putative[ck])) + " promoter regions.")
+                print("Scanned " + strand + " strand. Found " + str(len(putative[ck])) + " putative promoter regions.")
 
     out = [] 
     new_graph = tf.Graph()
@@ -224,7 +225,7 @@ def main():
                 scores.sort(key=lambda x: x[1], reverse=True)
                 new_scores = pick(scores, dt2, minDist, strand)
                 rows.extend(new_scores)
-                print("Predicted " + strand + " strand. Found " + str(len(new_scores)) + " promoters.")
+                print("Prediction complete for " + strand + " strand. Found " + str(len(new_scores)) + " putative TSSs.")
 
             rows.sort(key=lambda x: x[0])
             for row in rows:
