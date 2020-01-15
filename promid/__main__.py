@@ -111,11 +111,11 @@ def main():
                       ' -C chromosomes')
         exit()
 
-    print("PromID 1.02")
+    print("PromID v1.02")
     sLen = 1001
     half_size = 500
     batch_size = 128
-    dt1 = 0.05
+    dt1 = 0.1
     dt2 = args.T
     minDist = args.D 
     #print("Scan threshold: " + str(dt1))
