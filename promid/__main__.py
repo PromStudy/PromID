@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 import numpy as np
 import sys
@@ -13,8 +13,8 @@ import bisect
 from pkg_resources import resource_filename
  
 
-#tf.logging.set_verbosity(tf.logging.ERROR)
-#tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+tf.logging.set_verbosity(tf.logging.ERROR)
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 def get_options():
 
@@ -152,14 +152,14 @@ def main():
     print("---------------------------------------------------------")
     print("")  
     new_graph = tf.Graph()
-    with tf.compat.v1.Session(graph=new_graph) as sess:
-        tf.compat.v1.saved_model.load(sess, [tf.saved_model.SERVING], resource_filename(__name__, "models/model_scan"))
-        saver = tf.compat.v1.train.Saver()
-        saver.restore(sess, resource_filename(__name__, "models/model_scan/variables/variables") )
-        input_x = tf.compat.v1.get_default_graph().get_tensor_by_name("input_prom:0")
-        y = tf.compat.v1.get_default_graph().get_tensor_by_name("output_prom:0")
-        kr = tf.compat.v1.get_default_graph().get_tensor_by_name("kr:0")
-        in_training_mode = tf.compat.v1.get_default_graph().get_tensor_by_name("in_training_mode:0")    
+    with tf.Session(graph=new_graph) as sess:
+        tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], "models/model_scan")
+        saver = tf.train.Saver()
+        saver.restore(sess, "models/model_scan/variables/variables")
+        input_x = tf.get_default_graph().get_tensor_by_name("input_prom:0")
+        y = tf.get_default_graph().get_tensor_by_name("output_prom:0")
+        kr = tf.get_default_graph().get_tensor_by_name("kr:0")
+        in_training_mode = tf.get_default_graph().get_tensor_by_name("in_training_mode:0")    
         for key in fasta.keys(): 
             print("Scanning " + key)
             for strand in ["+", "-"]:
@@ -192,14 +192,14 @@ def main():
 
     out = [] 
     new_graph = tf.Graph()
-    with tf.compat.v1.Session(graph=new_graph) as sess:
-        tf.compat.v1.saved_model.load(sess, [tf.saved_model.SERVING], resource_filename(__name__, "models/model_pos") )
-        saver = tf.compat.v1.train.Saver()
-        saver.restore(sess, resource_filename(__name__, "models/model_pos/variables/variables") )
-        input_x = tf.compat.v1.get_default_graph().get_tensor_by_name("input_prom:0")
-        y = tf.compat.v1.get_default_graph().get_tensor_by_name("output_prom:0")
-        kr = tf.compat.v1.get_default_graph().get_tensor_by_name("kr:0")
-        in_training_mode = tf.compat.v1.get_default_graph().get_tensor_by_name("in_training_mode:0")    
+    with tf.Session(graph=new_graph) as sess:
+        tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], "models/model_pos")
+        saver = tf.train.Saver()
+        saver.restore(sess, "models/model_pos/variables/variables")
+        input_x = tf.get_default_graph().get_tensor_by_name("input_prom:0")
+        y = tf.get_default_graph().get_tensor_by_name("output_prom:0")
+        kr = tf.get_default_graph().get_tensor_by_name("kr:0")
+        in_training_mode = tf.get_default_graph().get_tensor_by_name("in_training_mode:0")     
         for key in fasta.keys(): 
             print("Predicting " + key)
             rows = []
