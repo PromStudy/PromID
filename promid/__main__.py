@@ -107,7 +107,7 @@ def main():
     args = get_options()
 
     if None in [args.I, args.O]:
-        logging.error('Usage: spliceai [-h] [-I [input]] [-O [output]] -D distance -T threshold '
+        logging.error('Usage: promid [-h] [-I [input]] [-O [output]] -D distance -T threshold '
                       ' -C chromosomes')
         exit()
 
