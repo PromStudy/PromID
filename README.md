@@ -30,7 +30,7 @@ conda install cudnn=7.1.2=cuda9.0_0
 ## Usage
 PromID can be run from the command line:
 ```sh
-promid -I hg19.fa -O hg19_promoters.bed
+promid -I hg19.fa -O hg19_promoters.bed -C chr20
 ```
 Required parameters:
  - ```-I```: Input fasta file.
