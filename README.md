@@ -26,7 +26,7 @@ If you chose the GPU version, please also install CUDA9 and cuDNN7:
 ```sh
 conda install cudatoolkit=9.0
 conda install cudnn=7.1.2=cuda9.0_0
-
+```
 ## Usage
 PromID can be run from the command line:
 ```sh
